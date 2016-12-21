@@ -20,14 +20,15 @@ try{
     exit;
 }
 
+// May be customized ?
 $bot -> addContext(array(
         'Humor:Funny',
         'Time:Morning',
         'Epoch:Winter'
 ));
 
+// Set who is talking to the bot (entity context)
 $bot -> setEntity( getenv('REMOTE_ADDR') );
-//         $ai -> setCaller( uniqid() );
 
 $response -> messages = array();
 
