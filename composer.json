@@ -12,5 +12,29 @@
         "flyingbono/smart-bot": "^1.0"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "flyingbono/smart-bot-demo",
+                "version": "1.0.x-dev",
+                "source": {
+                    "url": "https://github.com/flyingbono/SmartBotDemo.git",
+                    "type": "git",
+                    "reference": "dev-master"
+                }
+            }
+        }
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/flyingbono/SmartBotDemo/issues",
+        "wiki": "https://github.com/flyingbono/SmartBotDemo/wiki",
+        "source": "https://github.com/flyingbono/SmartBotDemo"
+    }
 }
