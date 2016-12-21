@@ -94,7 +94,8 @@
                 }
 
                 function scrollToBottom(){
-                    $.updateNiceScrolls();
+                    $('#output').getNiceScroll().resize();
+                    $('#output').getNiceScroll().show();
                     $('#output').getNiceScroll(0).doScrollTop($('#output-container').height(), 1);
                 }
 

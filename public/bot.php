@@ -1,7 +1,7 @@
 <?php
 require '../vendor/autoload.php';
-
 define('DATA_PATH', realpath('../data') );
+header('Content-type: application/json; charset=UTF-8');
 
 $response = new \StdClass;
 $response -> succeed = true;
@@ -26,15 +26,15 @@ $bot -> addContext(array(
         'Epoch:Winter'
 ));
 
-$bot -> setCaller( $this -> identity() -> get() -> skype );
+$bot -> setEntity( getenv('REMOTE_ADDR') );
 //         $ai -> setCaller( uniqid() );
 
 $response -> messages = array();
 
-foreach( explode(PHP_EOL, $bot -> talk( $this -> request -> getPost('message') ) ) as $botResponse ) {
+foreach( explode(PHP_EOL, $bot -> talk( $_GET['message'] ) ) as $botResponse ) {
     $message = new \stdClass();
     $message -> text = $botResponse;
-    $message -> recipient = $bot -> getCaller();
+    $message -> recipient = $bot -> getEntity();
     $message -> wait = 0;
     
     if(preg_match('/(.*)\/([0-9])/', $message -> text, $matches ) ) {
@@ -50,4 +50,5 @@ foreach( explode(PHP_EOL, $bot -> talk( $this -> request -> getPost('message') )
     $response -> messages[] = $message;
 }
 
+echo json_encode($response);
 

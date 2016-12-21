@@ -8,7 +8,7 @@
             "email": "bruno.vibert@bonobox.fr"
         }
     ],
-    "require-dev": {
+    "require": {
         "flyingbono/smart-bot": "^1.0"
     },
     "minimum-stability": "dev",
