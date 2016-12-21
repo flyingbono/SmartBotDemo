@@ -1,0 +1,16 @@
+{
+    "name": "flyingbono/smart-bot-demo",
+    "description": "Demo site for flyingbono/smart-bot",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Bruno VIBERT",
+            "email": "bruno.vibert@bonobox.fr"
+        }
+    ],
+    "require-dev": {
+        "flyingbono/smart-bot": "^1.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>SmartBot Demo</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        
+        <meta name="keywords" content="" />
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="./js/jquery.min.js"></script>
+        
+         <!-- Latest compiled and minified JavaScript -->
+        <script src="./js/bootstrap.min.js"></script>
+        <script src="./js/plugins/jquery.json.js"></script>
+        <script src="./js/plugins/jquery.scrollTo.js"></script>
+        <script src="./js/plugins/jquery.nicescroll.min.js"></script>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="./css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="./css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="./css/font-awesome.min.css">
+        
+        
+        <!-- SmartBot Demo styles -->
+        <link rel="stylesheet" href="./css/smart-bot-demo.css">
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                
+                // Scroll output
+                var options = {
+                        //                    hidecursordelay: 2000
+                        cursorcolor: '#337ab7'
+                        , cursorwidth: 10
+                        , cursoropacitymin: 0.6
+                        , background: '#efefef'
+                        , cursorborderradius: '0 4px 4px 0'
+                        , cursorborder: '0'
+                        , horizrailenabled: false
+                    }
+                
+                $('#output')
+                    .css('max-height', parseInt( $('#output').attr('data-scroll') )+'px')
+                    .css('height', parseInt( $('#output').attr('data-scroll') )+'px')
+                    .addClass('data-scroll').niceScroll(options);
+            
+            
+                var writing = $('<div class="smart-ai-message smart-ai-message-received smart-ai-writing" style="display:none">Smart AI is writing...</div>');
+                $('#output-container').append(writing);
+                
+                var pendingMessages = 0;
+                var lastMessage;
+
+                $('#input').on('keypress', function(e){
+                    if( e.keyCode == 13 )
+                        send();
+                });
+
+                $('#send').on('click', send );
+
+                function send(){
+                    var message = $('#input').val().trim();
+
+                    if( message == '' ) {
+                        //$.notify('warning', 'You must tell something...');
+                        return;
+                    }
+
+                    var now = new Date();
+                    var ts = now.getHours()+':'+now.getMinutes();
+                    $('#output-container').append('<div class="smart-ai-message smart-ai-message-sent"><span class="timestamp">'+ts+'</span>'+message+'</div>');
+                    
+                    lastMessage = message;
+                    $('#input').val('').focus();
+                    $.ajax({
+                        url: 'bot.php',
+                        data: {
+                            message : message
+                        },
+                        success: receive
+                    });
+                }
+
+                function url(text) {
+                    var urlRegex = /(https?:\/\/[^\s]+)/g;
+                    return text.replace(urlRegex, function(url) {
+                        return '<a href="' + url + '" target="_new">' + url + '</a>';
+                    });
+                }
+
+                function scrollToBottom(){
+                    $.updateNiceScrolls();
+                    $('#output').getNiceScroll(0).doScrollTop($('#output-container').height(), 1);
+                }
+
+                function receive(response){
+                    var timeout = 0;
+                    pendingMessages = pendingMessages + response.messages.length;
+                    
+                    $(response.messages).each(function(n, message){
+                        timeout += message.wait;
+
+                        var now = new Date();
+                        var ts = now.getHours()+':'+now.getMinutes();
+                        var msg = $('<div class="smart-ai-message smart-ai-message-received" style="display:none"><span class="timestamp">'+ts+'</span>'+url(message.text)+'</div>');
+                        $('#output-container').append(msg);
+                        $('#output-container').append(writing);
+                            
+                        setTimeout(function(){
+                            msg.fadeIn('fast', function(){ scrollToBottom(); });
+                            
+                            pendingMessages--;
+                            if( pendingMessages == 0 )
+                                writing.hide();
+                            
+                        }, timeout * 1000 );
+
+
+                        if( timeout > 0 && pendingMessages > 0 )
+                            writing.show();
+                        
+                    });
+                    
+                }
+
+                $('#input').focus();
+            
+            });
+                
+            
+        </script>
+    </head>
+    <body>
+
+
+
+
+        <div class="container">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="well smart-ai-output" id="output" data-scroll="350">
+                        <div id="output-container">
+                        
+                        </div>
+                    </div>
+                    <div class="smart-ai-input">
+                        <div class="input-group">
+                            <input type="text" class="form-control input-lg" placeholder="Say something to Smart Bot..." id="input">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary btn-lg" type="button" id="send"><span class="glyphicon glyphicon-send"></span> Send!</button>
+                            </span>
+                        </div>
+
+                    </div>
+                    
+                </div>
+                <div class="col-md-6">&nbsp;</div>
+            </div>
+            
+        </div>
+
+		
+</html>
